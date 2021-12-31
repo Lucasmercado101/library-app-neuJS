@@ -35,21 +35,13 @@ init _ url key =
 
 
 type Msg
-    = Msg1
-    | Msg2
-    | UrlRequested Browser.UrlRequest
+    = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Msg1 ->
-            ( model, Cmd.none )
-
-        Msg2 ->
-            ( model, Cmd.none )
-
         UrlRequested urlRequest ->
             case urlRequest of
                 Browser.Internal url ->

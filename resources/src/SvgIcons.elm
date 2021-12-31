@@ -1,16 +1,19 @@
 module SvgIcons exposing (..)
 
+import Html exposing (Html)
 import Svg
 import Svg.Attributes as SA
 
 
-bookOpenOutline =
+bookOpenOutline : List (Svg.Attribute msg) -> Html msg
+bookOpenOutline attrs =
     Svg.svg
-        [ SA.class "h-6 w-6"
-        , SA.fill "none"
-        , SA.viewBox "0 0 24 24"
-        , SA.stroke "currentColor"
-        ]
+        ([ SA.fill "none"
+         , SA.viewBox "0 0 24 24"
+         , SA.stroke "currentColor"
+         ]
+            ++ attrs
+        )
         [ Svg.path
             [ SA.strokeLinecap "round"
             , SA.strokeLinejoin "round"

@@ -3,7 +3,8 @@ module Main exposing (main)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (for, id, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Svg
 import Svg.Attributes
 import SvgIcons exposing (bookOpenOutline, plusOutline)
@@ -12,7 +13,7 @@ import Url
 
 
 
--- elm make src/Main.elm --output=js/elm.js
+-- elm make src/Main.elm --output=js/elm.js --debug
 
 
 main : Program () Model Msg
@@ -27,21 +28,38 @@ main =
         }
 
 
+type alias NewBookData =
+    { title : String
+    , author : String
+    }
+
+
 type alias Model =
     { key : Nav.Key
     , url : Url.Url
-    , property : String
+    , newBookData : Maybe NewBookData
     }
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( Model key url "modelInitialValue", Cmd.none )
+    ( { key = key
+      , url = url
+      , newBookData = Nothing
+      }
+    , Cmd.none
+    )
 
 
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
+    | AddNewBook
+    | GotNewBookMsg NewBookMsg
+
+
+type NewBookMsg
+    = ChangeTitle String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -60,9 +78,34 @@ update msg model =
             , Cmd.none
             )
 
+        AddNewBook ->
+            ( { model
+                | newBookData =
+                    Just
+                        { title = ""
+                        , author = ""
+                        }
+              }
+            , Cmd.none
+            )
+
+        GotNewBookMsg newBookMsg ->
+            case model.newBookData of
+                Just newBookData ->
+                    case newBookMsg of
+                        ChangeTitle newTitle ->
+                            ( { model | newBookData = Just { newBookData | title = newTitle } }
+                            , Cmd.none
+                            )
+
+                Nothing ->
+                    ( model
+                    , Cmd.none
+                    )
+
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -75,13 +118,31 @@ view model =
                 [ p_36
                 ]
             ]
-            [ simpleEmptyState
-                { mainIcon = bookOpenOutline
-                , title = "No books"
-                , subtitle = "Get started by adding a book"
-                , buttonText = "Add book"
-                , buttonIcon = Just plusOutline
-                }
+            [ case model.newBookData of
+                Just data ->
+                    form []
+                        [ h2 [] [ text "Add Book" ]
+                        , column []
+                            [ label [ for "book-title" ] [ text "Title" ]
+                            , input
+                                [ id "book-title"
+                                , type_ "text"
+                                , value data.title
+                                , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
+                                ]
+                                []
+                            ]
+                        ]
+
+                Nothing ->
+                    simpleEmptyState
+                        { mainIcon = bookOpenOutline
+                        , title = "No books"
+                        , subtitle = "Get started by adding a book"
+                        , buttonText = "Add book"
+                        , buttonIcon = Just plusOutline
+                        , buttonMsg = AddNewBook
+                        }
             ]
         ]
     }
@@ -93,9 +154,10 @@ simpleEmptyState :
     , subtitle : String
     , buttonText : String
     , buttonIcon : Maybe (List (Svg.Attribute Msg) -> Html Msg)
+    , buttonMsg : Msg
     }
     -> Html Msg
-simpleEmptyState { mainIcon, title, subtitle, buttonText, buttonIcon } =
+simpleEmptyState { mainIcon, title, subtitle, buttonText, buttonIcon, buttonMsg } =
     column
         [ TW.apply
             [ m_auto
@@ -126,7 +188,8 @@ simpleEmptyState { mainIcon, title, subtitle, buttonText, buttonIcon } =
                 [ text subtitle ]
             ]
         , button
-            [ TW.apply
+            [ onClick buttonMsg
+            , TW.apply
                 [ flex
                 , px_3
                 , py_2
@@ -163,8 +226,9 @@ simpleEmptyState { mainIcon, title, subtitle, buttonText, buttonIcon } =
 
 column : List (Attribute msg) -> List (Html msg) -> Html msg
 column attrs content =
-    div ([ TW.apply [ flex, flex_col ] ] ++ attrs) content
+    div (TW.apply [ flex, flex_col ] :: attrs) content
 
 
-row content =
-    div [ TW.apply [ flex, flex_row ] ] content
+row : List (Attribute msg) -> List (Html msg) -> Html msg
+row attrs content =
+    div (TW.apply [ flex, flex_row ] :: attrs) content

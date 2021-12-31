@@ -45,7 +45,13 @@ init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
       , url = url
-      , newBookData = Nothing
+      , newBookData =
+            Just
+                { title = ""
+                , author = ""
+                }
+
+      --   , newBookData = Nothing
       }
     , Cmd.none
     )
@@ -113,36 +119,58 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "Title"
     , body =
-        [ div
-            [ TW.apply
-                [ p_36
+        [ div [ TW.apply [ bg_gray_100, h_screen, w_screen ] ]
+            [ div
+                [ TW.apply
+                    [ p_36
+                    ]
                 ]
-            ]
-            [ case model.newBookData of
-                Just data ->
-                    form []
-                        [ h2 [] [ text "Add Book" ]
-                        , column []
-                            [ label [ for "book-title" ] [ text "Title" ]
-                            , input
-                                [ id "book-title"
-                                , type_ "text"
-                                , value data.title
-                                , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
+                [ case model.newBookData of
+                    Just data ->
+                        form [ TW.apply [ shadow_md, rounded_md, p_4, bg_white ] ]
+                            [ bookOpenOutline
+                                [ [ w_16, h_16, mx_auto ]
+                                    |> String.join " "
+                                    |> Svg.Attributes.class
                                 ]
-                                []
+                            , h2
+                                [ TW.apply
+                                    [ text_center
+                                    , text_xl
+                                    , font_semibold
+                                    ]
+                                ]
+                                [ text "Add Book" ]
+                            , column []
+                                [ label [ for "book-title" ] [ p [] [ text "Title" ] ]
+                                , input
+                                    [ id "book-title"
+                                    , type_ "text"
+                                    , value data.title
+                                    , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
+                                    , TW.apply
+                                        [ border
+                                        , border_gray_300
+                                        , p_2
+                                        , pl_3
+                                        , w_full
+                                        , rounded_md
+                                        ]
+                                    ]
+                                    []
+                                ]
                             ]
-                        ]
 
-                Nothing ->
-                    simpleEmptyState
-                        { mainIcon = bookOpenOutline
-                        , title = "No books"
-                        , subtitle = "Get started by adding a book"
-                        , buttonText = "Add book"
-                        , buttonIcon = Just plusOutline
-                        , buttonMsg = AddNewBook
-                        }
+                    Nothing ->
+                        simpleEmptyState
+                            { mainIcon = bookOpenOutline
+                            , title = "No books"
+                            , subtitle = "Get started by adding a book"
+                            , buttonText = "Add book"
+                            , buttonIcon = Just plusOutline
+                            , buttonMsg = AddNewBook
+                            }
+                ]
             ]
         ]
     }

@@ -15,6 +15,8 @@ hover strs =
         |> List.map (\str -> "hover:" ++ str)
         |> String.join " "
 
+
+
 -- Resposive helpers (https://tailwindcss.com/docs/responsive-design)
 
 
@@ -18536,3 +18538,76 @@ border_l_8 =
 border_l : String
 border_l =
     "border-l"
+
+
+
+-- Box Shadows (https://tailwindcss.com/docs/box-shadow)
+{- "shadow-sm" -}
+
+
+shadow_sm : String
+shadow_sm =
+    "shadow-sm"
+
+
+
+{- "shadow" -}
+
+
+shadow : String
+shadow =
+    "shadow"
+
+
+
+{- "shadow-md" -}
+
+
+shadow_md : String
+shadow_md =
+    "shadow-md"
+
+
+
+{- "shadow-lg" -}
+
+
+shadow_lg : String
+shadow_lg =
+    "shadow-lg"
+
+
+
+{- "shadow-xl" -}
+
+
+shadow_xl : String
+shadow_xl =
+    "shadow-xl"
+
+
+
+{- "shadow-2xl" -}
+
+
+shadow_2xl : String
+shadow_2xl =
+    "shadow-2xl"
+
+
+
+{- "shadow-inner" -}
+
+
+shadow_inner : String
+shadow_inner =
+    "shadow-inner"
+
+
+
+{- "shadow-none" -}
+
+
+shadow_none : String
+shadow_none =
+    "shadow-none"

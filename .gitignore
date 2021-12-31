@@ -13,3 +13,4 @@ neutralino.js
 *.log
 
 elm-stuff
+.tmp

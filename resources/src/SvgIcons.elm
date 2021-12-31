@@ -31,8 +31,7 @@ bookOpenOutline attrs =
 plusOutline : List (Svg.Attribute msg) -> Html msg
 plusOutline attrs =
     Svg.svg
-        ([ SA.class "h-6 w-6"
-         , SA.fill "none"
+        ([ SA.fill "none"
          , SA.viewBox "0 0 24 24"
          , SA.stroke "currentColor"
          ]

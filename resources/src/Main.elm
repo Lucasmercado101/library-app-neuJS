@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Array exposing (Array)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
@@ -7,7 +8,7 @@ import Html.Attributes exposing (for, id, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Svg
 import Svg.Attributes
-import SvgIcons exposing (bookOpenOutline, plusOutline)
+import SvgIcons exposing (bookOpenOutline, plusOutline, xOutline)
 import TailwindHelpers as TW exposing (..)
 import Url
 
@@ -30,7 +31,7 @@ main =
 
 type alias NewBookData =
     { title : String
-    , author : String
+    , authors : Array String
     }
 
 
@@ -48,7 +49,7 @@ init _ url key =
       , newBookData =
             Just
                 { title = ""
-                , author = ""
+                , authors = Array.fromList [ "" ]
                 }
 
       --   , newBookData = Nothing
@@ -66,6 +67,9 @@ type Msg
 
 type NewBookMsg
     = ChangeTitle String
+    | AddAuthor
+    | ChangeAuthor Int String
+    | RemoveAuthor Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -89,7 +93,7 @@ update msg model =
                 | newBookData =
                     Just
                         { title = ""
-                        , author = ""
+                        , authors = Array.fromList [ "" ]
                         }
               }
             , Cmd.none
@@ -101,6 +105,39 @@ update msg model =
                     case newBookMsg of
                         ChangeTitle newTitle ->
                             ( { model | newBookData = Just { newBookData | title = newTitle } }
+                            , Cmd.none
+                            )
+
+                        AddAuthor ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | authors = Array.push "" newBookData.authors
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
+                        ChangeAuthor index newAuthor ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | authors = Array.set index newAuthor newBookData.authors
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
+                        RemoveAuthor index ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | authors = removeFromArray index newBookData.authors
+                                        }
+                              }
                             , Cmd.none
                             )
 
@@ -126,7 +163,7 @@ view model =
                     ]
                 ]
                 [ case model.newBookData of
-                    Just data ->
+                    Just newBookData ->
                         form [ TW.apply [ shadow_md, rounded_md, p_4, bg_white ] ]
                             [ bookOpenOutline
                                 [ [ w_16, h_16, mx_auto ]
@@ -141,24 +178,107 @@ view model =
                                     ]
                                 ]
                                 [ text "Add Book" ]
-                            , column []
-                                [ label [ for "book-title" ] [ p [] [ text "Title" ] ]
-                                , input
-                                    [ id "book-title"
-                                    , type_ "text"
-                                    , value data.title
-                                    , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
-                                    , TW.apply
-                                        [ border
-                                        , border_gray_300
-                                        , p_2
-                                        , pl_3
-                                        , w_full
-                                        , rounded_md
-                                        ]
-                                    ]
+                            , column [ TW.apply [ gap_4 ] ]
+                                (column
                                     []
-                                ]
+                                    [ label [ for "book-title" ] [ p [] [ text "Title" ] ]
+                                    , input
+                                        [ id "book-title"
+                                        , type_ "text"
+                                        , value newBookData.title
+                                        , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
+                                        , TW.apply
+                                            [ border
+                                            , border_gray_300
+                                            , p_2
+                                            , pl_3
+                                            , w_full
+                                            , rounded_md
+                                            ]
+                                        ]
+                                        []
+                                    ]
+                                    :: (Array.toList
+                                            (Array.indexedMap
+                                                (\index author ->
+                                                    column []
+                                                        [ label
+                                                            [ for ("book-author-" ++ String.fromInt index)
+                                                            ]
+                                                            [ text ("Author " ++ String.fromInt (index + 1)) ]
+                                                        , row []
+                                                            [ input
+                                                                [ id ("book-author-" ++ String.fromInt index)
+                                                                , type_ "text"
+                                                                , value
+                                                                    (newBookData.authors
+                                                                        |> Array.get index
+                                                                        |> Maybe.withDefault ""
+                                                                    )
+                                                                , onInput (\l -> GotNewBookMsg (ChangeAuthor index l))
+                                                                , TW.apply
+                                                                    [ border
+                                                                    , border_gray_300
+                                                                    , p_2
+                                                                    , pl_3
+                                                                    , w_full
+                                                                    , rounded_md
+                                                                    , rounded_r_none
+                                                                    ]
+                                                                ]
+                                                                []
+                                                            , if index > 0 then
+                                                                button
+                                                                    [ type_ "button"
+                                                                    , onClick (GotNewBookMsg (RemoveAuthor index))
+                                                                    , TW.apply
+                                                                        [ bg_red_500
+                                                                        , rounded_r_md
+                                                                        , w_10
+                                                                        , h_auto
+                                                                        , p_1
+                                                                        , hover [ bg_red_700 ]
+                                                                        ]
+                                                                    ]
+                                                                    [ xOutline
+                                                                        [ [ text_white
+                                                                          ]
+                                                                            |> String.join " "
+                                                                            |> Svg.Attributes.class
+                                                                        ]
+                                                                    ]
+
+                                                              else
+                                                                text ""
+                                                            ]
+                                                        ]
+                                                )
+                                                newBookData.authors
+                                            )
+                                            ++ [ button
+                                                    [ onClick (GotNewBookMsg AddAuthor)
+                                                    , type_ "button"
+                                                    , TW.apply
+                                                        [ flex
+                                                        , px_3
+                                                        , py_2
+                                                        , gap_x_2
+                                                        , font_semibold
+                                                        , block
+                                                        , rounded
+                                                        , mx_auto
+                                                        , text_white
+                                                        , shadow_md
+                                                        , bg_blue_600
+                                                        , hover [ bg_blue_700 ]
+                                                        , w_full
+                                                        , text_center
+                                                        ]
+                                                    ]
+                                                    [ p [ TW.apply [ w_full ] ] [ text "Add Author" ] ]
+                                               ]
+                                       )
+                                )
                             ]
 
                     Nothing ->
@@ -246,6 +366,16 @@ simpleEmptyState { mainIcon, title, subtitle, buttonText, buttonIcon, buttonMsg 
                 buttonText
             ]
         ]
+
+
+removeFromList : Int -> List a -> List a
+removeFromList i xs =
+    List.take i xs ++ List.drop (i + 1) xs
+
+
+removeFromArray : Int -> Array a -> Array a
+removeFromArray i =
+    Array.toList >> removeFromList i >> Array.fromList
 
 
 

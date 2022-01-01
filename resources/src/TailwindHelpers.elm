@@ -18747,3 +18747,131 @@ overflow_x_scroll =
 overflow_y_scroll : String
 overflow_y_scroll =
     "overflow-y-scroll"
+
+
+
+-- Object Fit (https://tailwindcss.com/docs/object-fit)
+{- "object-contain" -}
+
+
+object_contain : String
+object_contain =
+    "object-contain"
+
+
+
+{- "object-cover" -}
+
+
+object_cover : String
+object_cover =
+    "object-cover"
+
+
+
+{- "object-fill" -}
+
+
+object_fill : String
+object_fill =
+    "object-fill"
+
+
+
+{- "object-none" -}
+
+
+object_none : String
+object_none =
+    "object-none"
+
+
+
+{- "object-scale-down" -}
+
+
+object_scale_down : String
+object_scale_down =
+    "object-scale-down"
+
+
+
+-- Object Position (https://tailwindcss.com/docs/object-position)
+{- "object-bottom" -}
+
+
+object_bottom : String
+object_bottom =
+    "object-bottom"
+
+
+
+{- "object-center" -}
+
+
+object_center : String
+object_center =
+    "object-center"
+
+
+
+{- "object-left" -}
+
+
+object_left : String
+object_left =
+    "object-left"
+
+
+
+{- "object-left-bottom" -}
+
+
+object_left_bottom : String
+object_left_bottom =
+    "object-left-bottom"
+
+
+
+{- "object-left-top" -}
+
+
+object_left_top : String
+object_left_top =
+    "object-left-top"
+
+
+
+{- "object-right" -}
+
+
+object_right : String
+object_right =
+    "object-right"
+
+
+
+{- "object-right-bottom" -}
+
+
+object_right_bottom : String
+object_right_bottom =
+    "object-right-bottom"
+
+
+
+{- "object-right-top" -}
+
+
+object_right_top : String
+object_right_top =
+    "object-right-top"
+
+
+
+{- "object-top" -}
+
+
+object_top : String
+object_top =
+    "object-top"

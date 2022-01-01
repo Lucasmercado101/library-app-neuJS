@@ -18875,3 +18875,31 @@ object_right_top =
 object_top : String
 object_top =
     "object-top"
+
+
+
+-- Flex Wrap (https://tailwindcss.com/docs/flex-wrap)
+{- "flex-wrap" -}
+
+
+flex_wrap : String
+flex_wrap =
+    "flex-wrap"
+
+
+
+{- "flex-wrap-reverse" -}
+
+
+flex_wrap_reverse : String
+flex_wrap_reverse =
+    "flex-wrap-reverse"
+
+
+
+{- "flex-nowrap" -}
+
+
+flex_nowrap : String
+flex_nowrap =
+    "flex-nowrap"

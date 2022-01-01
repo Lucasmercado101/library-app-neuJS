@@ -4,7 +4,7 @@ import Array exposing (Array)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (for, id, src, type_, value)
+import Html.Attributes exposing (for, id, src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Svg
 import Svg.Attributes
@@ -150,10 +150,12 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "Title"
     , body =
-        [ div [ TW.apply [ bg_gray_100, h_screen, w_screen, overflow_auto ] ]
+        [ row [ TW.apply [ bg_gray_100, h_screen, w_screen ] ]
             [ div
                 [ TW.apply
-                    [ grid
+                    [ overflow_auto
+                    , w_2_slash_3
+                    , grid
                     , gap_x_3
                     , sm [ grid_cols_2 ]
                     , md [ grid_cols_3 ]
@@ -180,6 +182,7 @@ view model =
                 , book
                 , book
                 ]
+            , bookDetails
 
             --  div
             -- [ TW.apply
@@ -317,6 +320,72 @@ view model =
             ]
         ]
     }
+
+
+bookDetails =
+    column
+        [ TW.apply
+            [ h_full
+            , bg_black
+            , w_1_slash_3
+            , pt_14
+            , px_12
+            , pb_6
+            , text_white
+            , items_center
+            , gap_y_8
+            ]
+        ]
+        [ p
+            [ TW.apply
+                [ text_2xl
+                , font_semibold
+                ]
+            ]
+            [ text "Book Details" ]
+        , img
+            [ src "https://ia800604.us.archive.org/view_archive.php?archive=/7/items/olcovers68/olcovers68-L.zip&file=680401-L.jpg"
+            , TW.apply
+                [ object_center
+                , shrink_0
+                , object_cover
+                , rounded_2xl
+                , overflow_hidden
+                , h_96
+                , w_60
+                ]
+            ]
+            []
+        , column [ TW.apply [ text_center ] ]
+            [ p [ TW.apply [ text_3xl, font_semibold ] ] [ text "Klan-destine Relationships: A Black Man's Odyssey in the Ku Klux Klan" ]
+            , p [ TW.apply [ text_2xl, font_medium, mt_1, opacity_50 ] ] [ text "Daryl Davis" ]
+            ]
+        , div
+            [ TW.apply
+                [ bg_gray_900
+                , p_6
+                , rounded_md
+                , text_center
+                , w_32
+                ]
+            ]
+            [ p
+                [ TW.apply
+                    [ text_white
+                    , text_2xl
+                    ]
+                ]
+                [ text "200" ]
+            , p [ TW.apply [ text_gray_400 ] ] [ text "pages" ]
+            ]
+        , div [ TW.apply [ overflow_hidden ] ]
+            [ p [ TW.apply [ text_xl, font_bold, mb_2 ] ] [ text "Plot" ]
+            , div [ TW.apply [ overflow_x_auto, h_full, text_lg ] ]
+                [ text
+                    "While marching in a cub-scout parade, young Daryl Davis was pelted by rocks and bottles. As a teenager he was told he would be shipped back to Africa. Driven by an intense need to understand those who hate him because of the colour of his skin, Davis decided to seek out the roots of racism."
+                ]
+            ]
+        ]
 
 
 book =

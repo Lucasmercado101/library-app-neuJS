@@ -19035,19 +19035,19 @@ grid_cols_none =
 {-
    "container"
 
-      Breakpoint          Properties
+    Breakpoint      Properties
 
-      None	            width: 100%;
+    None            width: 100%;
 
-      sm (640px)	    max-width: 640px;
+    sm (640px)      max-width: 640px;
 
-      md (768px)	    max-width: 768px;
+    md (768px)      max-width: 768px;
 
-      lg (1024px)	    max-width: 1024px;
+    lg (1024px)     max-width: 1024px;
 
-      xl (1280px)	    max-width: 1280px;
+    xl (1280px)     max-width: 1280px;
 
-      2xl (1536px)	    max-width: 1536px;
+    2xl (1536px)    max-width: 1536px;
 -}
 
 

@@ -151,172 +151,165 @@ view model =
     { title = "Title"
     , body =
         [ row [ TW.apply [ bg_gray_100, h_screen, w_screen ] ]
-            [ div
-                [ TW.apply
-                    [ overflow_auto
-                    , w_2_slash_3
-                    , grid
-                    , gap_x_3
-                    , sm [ grid_cols_2 ]
-                    , md [ grid_cols_3 ]
-                    , lg [ grid_cols_4 ]
-                    , xl [ grid_cols_5 ]
-                    , s2xl [ grid_cols_6 ]
+            [ --     div
+              --     [ TW.apply
+              --         [ overflow_auto
+              --         , w_2_slash_3
+              --         , grid
+              --         , gap_x_3
+              --         , sm [ grid_cols_2 ]
+              --         , md [ grid_cols_3 ]
+              --         , lg [ grid_cols_4 ]
+              --         , xl [ grid_cols_5 ]
+              --         , s2xl [ grid_cols_6 ]
+              --         -- , md [ flex, flex_col ]
+              --         ]
+              --     ]
+              --     [ book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     , book
+              --     ]
+              -- , bookDetails
+              case model.newBookData of
+                Just newBookData ->
+                    form [ TW.apply [ shadow_md, rounded_md, p_4, bg_white ] ]
+                        [ bookOpenOutline
+                            [ [ w_16, h_16, mx_auto ]
+                                |> String.join " "
+                                |> Svg.Attributes.class
+                            ]
+                        , h2
+                            [ TW.apply
+                                [ text_center
+                                , text_xl
+                                , font_semibold
+                                ]
+                            ]
+                            [ text "Add Book" ]
+                        , column [ TW.apply [ gap_4 ] ]
+                            (column
+                                []
+                                [ label [ for "book-title" ] [ p [] [ text "Title" ] ]
+                                , input
+                                    [ id "book-title"
+                                    , type_ "text"
+                                    , value newBookData.title
+                                    , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
+                                    , TW.apply
+                                        [ border
+                                        , border_gray_300
+                                        , p_2
+                                        , pl_3
+                                        , w_full
+                                        , rounded_md
+                                        ]
+                                    ]
+                                    []
+                                ]
+                                :: (Array.toList
+                                        (Array.indexedMap
+                                            (\index author ->
+                                                column []
+                                                    [ label
+                                                        [ for ("book-author-" ++ String.fromInt index)
+                                                        ]
+                                                        [ text ("Author " ++ String.fromInt (index + 1)) ]
+                                                    , row []
+                                                        [ input
+                                                            [ id ("book-author-" ++ String.fromInt index)
+                                                            , type_ "text"
+                                                            , value
+                                                                (newBookData.authors
+                                                                    |> Array.get index
+                                                                    |> Maybe.withDefault ""
+                                                                )
+                                                            , onInput (\l -> GotNewBookMsg (ChangeAuthor index l))
+                                                            , TW.apply
+                                                                [ border
+                                                                , border_gray_300
+                                                                , p_2
+                                                                , pl_3
+                                                                , w_full
+                                                                , rounded_md
+                                                                , rounded_r_none
+                                                                ]
+                                                            ]
+                                                            []
+                                                        , if index > 0 then
+                                                            button
+                                                                [ type_ "button"
+                                                                , onClick (GotNewBookMsg (RemoveAuthor index))
+                                                                , TW.apply
+                                                                    [ bg_red_500
+                                                                    , rounded_r_md
+                                                                    , w_10
+                                                                    , h_auto
+                                                                    , p_1
+                                                                    , hover [ bg_red_700 ]
+                                                                    ]
+                                                                ]
+                                                                [ xOutline
+                                                                    [ [ text_white
+                                                                      ]
+                                                                        |> String.join " "
+                                                                        |> Svg.Attributes.class
+                                                                    ]
+                                                                ]
 
-                    -- , md [ flex, flex_col ]
-                    ]
-                ]
-                [ book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                , book
-                ]
-            , bookDetails
+                                                          else
+                                                            text ""
+                                                        ]
+                                                    ]
+                                            )
+                                            newBookData.authors
+                                        )
+                                        ++ [ button
+                                                [ onClick (GotNewBookMsg AddAuthor)
+                                                , type_ "button"
+                                                , TW.apply
+                                                    [ flex
+                                                    , px_3
+                                                    , py_2
+                                                    , gap_x_2
+                                                    , font_semibold
+                                                    , block
+                                                    , rounded
+                                                    , mx_auto
+                                                    , text_white
+                                                    , shadow_md
+                                                    , bg_blue_600
+                                                    , hover [ bg_blue_700 ]
+                                                    , w_full
+                                                    , text_center
+                                                    ]
+                                                ]
+                                                [ p [ TW.apply [ w_full ] ] [ text "Add Author" ] ]
+                                           ]
+                                   )
+                            )
+                        ]
 
-            --  div
-            -- [ TW.apply
-            --     [ p_36
-            --     ]
-            -- ]
-            -- [ book
-            -- , case model.newBookData of
-            --     Just newBookData ->
-            --         form [ TW.apply [ shadow_md, rounded_md, p_4, bg_white ] ]
-            --             [ bookOpenOutline
-            --                 [ [ w_16, h_16, mx_auto ]
-            --                     |> String.join " "
-            --                     |> Svg.Attributes.class
-            --                 ]
-            --             , h2
-            --                 [ TW.apply
-            --                     [ text_center
-            --                     , text_xl
-            --                     , font_semibold
-            --                     ]
-            --                 ]
-            --                 [ text "Add Book" ]
-            --             , column [ TW.apply [ gap_4 ] ]
-            --                 (column
-            --                     []
-            --                     [ label [ for "book-title" ] [ p [] [ text "Title" ] ]
-            --                     , input
-            --                         [ id "book-title"
-            --                         , type_ "text"
-            --                         , value newBookData.title
-            --                         , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
-            --                         , TW.apply
-            --                             [ border
-            --                             , border_gray_300
-            --                             , p_2
-            --                             , pl_3
-            --                             , w_full
-            --                             , rounded_md
-            --                             ]
-            --                         ]
-            --                         []
-            --                     ]
-            --                     :: (Array.toList
-            --                             (Array.indexedMap
-            --                                 (\index author ->
-            --                                     column []
-            --                                         [ label
-            --                                             [ for ("book-author-" ++ String.fromInt index)
-            --                                             ]
-            --                                             [ text ("Author " ++ String.fromInt (index + 1)) ]
-            --                                         , row []
-            --                                             [ input
-            --                                                 [ id ("book-author-" ++ String.fromInt index)
-            --                                                 , type_ "text"
-            --                                                 , value
-            --                                                     (newBookData.authors
-            --                                                         |> Array.get index
-            --                                                         |> Maybe.withDefault ""
-            --                                                     )
-            --                                                 , onInput (\l -> GotNewBookMsg (ChangeAuthor index l))
-            --                                                 , TW.apply
-            --                                                     [ border
-            --                                                     , border_gray_300
-            --                                                     , p_2
-            --                                                     , pl_3
-            --                                                     , w_full
-            --                                                     , rounded_md
-            --                                                     , rounded_r_none
-            --                                                     ]
-            --                                                 ]
-            --                                                 []
-            --                                             , if index > 0 then
-            --                                                 button
-            --                                                     [ type_ "button"
-            --                                                     , onClick (GotNewBookMsg (RemoveAuthor index))
-            --                                                     , TW.apply
-            --                                                         [ bg_red_500
-            --                                                         , rounded_r_md
-            --                                                         , w_10
-            --                                                         , h_auto
-            --                                                         , p_1
-            --                                                         , hover [ bg_red_700 ]
-            --                                                         ]
-            --                                                     ]
-            --                                                     [ xOutline
-            --                                                         [ [ text_white
-            --                                                           ]
-            --                                                             |> String.join " "
-            --                                                             |> Svg.Attributes.class
-            --                                                         ]
-            --                                                     ]
-            --                                               else
-            --                                                 text ""
-            --                                             ]
-            --                                         ]
-            --                                 )
-            --                                 newBookData.authors
-            --                             )
-            --                             ++ [ button
-            --                                     [ onClick (GotNewBookMsg AddAuthor)
-            --                                     , type_ "button"
-            --                                     , TW.apply
-            --                                         [ flex
-            --                                         , px_3
-            --                                         , py_2
-            --                                         , gap_x_2
-            --                                         , font_semibold
-            --                                         , block
-            --                                         , rounded
-            --                                         , mx_auto
-            --                                         , text_white
-            --                                         , shadow_md
-            --                                         , bg_blue_600
-            --                                         , hover [ bg_blue_700 ]
-            --                                         , w_full
-            --                                         , text_center
-            --                                         ]
-            --                                     ]
-            --                                     [ p [ TW.apply [ w_full ] ] [ text "Add Author" ] ]
-            --                                ]
-            --                        )
-            --                 )
-            --             ]
-            --     Nothing ->
-            --         simpleEmptyState
-            --             { mainIcon = bookOpenOutline
-            --             , title = "No books"
-            --             , subtitle = "Get started by adding a book"
-            --             , buttonText = "Add book"
-            --             , buttonIcon = Just plusOutline
-            --             , buttonMsg = AddNewBook
-            --             }
-            -- ]
+                Nothing ->
+                    simpleEmptyState
+                        { mainIcon = bookOpenOutline
+                        , title = "No books"
+                        , subtitle = "Get started by adding a book"
+                        , buttonText = "Add book"
+                        , buttonIcon = Just plusOutline
+                        , buttonMsg = AddNewBook
+                        }
             ]
         ]
     }

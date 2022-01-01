@@ -4,8 +4,8 @@ import Array exposing (Array)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (for, id, src, style, type_, value)
-import Html.Events exposing (onClick, onInput)
+import Html.Attributes exposing (for, id, required, src, style, type_, value)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Json.Decode
 import Ports
 import Svg
@@ -74,6 +74,7 @@ type NewBookMsg
     | AddAuthor
     | ChangeAuthor Int String
     | RemoveAuthor Int
+    | CreateNewBook
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -155,6 +156,14 @@ update msg model =
                             , Cmd.none
                             )
 
+                        CreateNewBook ->
+                            ( { model | newBookData = Nothing }
+                            , Ports.sendCreateNewBook
+                                { title = newBookData.title
+                                , authors = Array.toList newBookData.authors
+                                }
+                            )
+
                 Nothing ->
                     ( model
                     , Cmd.none
@@ -170,7 +179,7 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "Title"
     , body =
-        [ row [ TW.apply [ bg_gray_100, h_screen, w_screen ] ]
+        [ row [ TW.apply [ bg_gray_100, h_screen, w_screen, overflow_auto ] ]
             [ --     div
               --     [ TW.apply
               --         [ overflow_auto
@@ -212,7 +221,8 @@ view model =
                             case model.newBookData of
                                 Just newBookData ->
                                     form
-                                        [ TW.apply
+                                        [ onSubmit (GotNewBookMsg CreateNewBook)
+                                        , TW.apply
                                             [ shadow_md
                                             , rounded_md
                                             , p_4
@@ -242,6 +252,7 @@ view model =
                                                     [ id "book-title"
                                                     , type_ "text"
                                                     , value newBookData.title
+                                                    , required True
                                                     , onInput (\l -> ChangeTitle l |> GotNewBookMsg)
                                                     , TW.apply
                                                         [ border
@@ -266,6 +277,7 @@ view model =
                                                                         [ input
                                                                             [ id ("book-author-" ++ String.fromInt index)
                                                                             , type_ "text"
+                                                                            , required True
                                                                             , value author
                                                                             , onInput (\l -> GotNewBookMsg (ChangeAuthor index l))
                                                                             , TW.apply

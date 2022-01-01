@@ -31,3 +31,20 @@ app.ports.sendRequestBooks.subscribe(async function () {
     // }
   }
 });
+
+app.ports.sendCreateNewBook.subscribe(async function (book) {
+  try {
+    let books = [];
+    try {
+      books = await Neutralino.storage.getData("books");
+    } catch (e) {
+      // TODO: handle error
+    }
+    books.push(book);
+    await Neutralino.storage.setData("books", JSON.stringify(books));
+    return app.ports.booksReceiver.send(books);
+  } catch (e) {
+    // TODO: handle error
+    // return app.ports.booksReceiver.send([]);
+  }
+});

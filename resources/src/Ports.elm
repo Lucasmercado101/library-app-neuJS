@@ -1,4 +1,4 @@
-module Ports exposing (..)
+port module Ports exposing (..)
 
 import Json.Decode exposing (Decoder)
 import Json.Encode as JE

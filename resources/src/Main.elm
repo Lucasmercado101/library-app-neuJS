@@ -266,11 +266,7 @@ view model =
                                                                         [ input
                                                                             [ id ("book-author-" ++ String.fromInt index)
                                                                             , type_ "text"
-                                                                            , value
-                                                                                (newBookData.authors
-                                                                                    |> Array.get index
-                                                                                    |> Maybe.withDefault ""
-                                                                                )
+                                                                            , value author
                                                                             , onInput (\l -> GotNewBookMsg (ChangeAuthor index l))
                                                                             , TW.apply
                                                                                 [ border
@@ -331,7 +327,31 @@ view model =
                                                                     , text_center
                                                                     ]
                                                                 ]
-                                                                [ p [ TW.apply [ w_full ] ] [ text "Add Author" ] ]
+                                                                [ p
+                                                                    [ TW.apply [ w_full ]
+                                                                    ]
+                                                                    [ text "Add Author" ]
+                                                                ]
+                                                           , row []
+                                                                [ button
+                                                                    [ type_ "submit"
+                                                                    , TW.apply
+                                                                        [ flex
+                                                                        , px_3
+                                                                        , py_2
+                                                                        , gap_x_2
+                                                                        , font_semibold
+                                                                        , block
+                                                                        , rounded
+                                                                        , ml_auto
+                                                                        , text_white
+                                                                        , shadow_md
+                                                                        , bg_blue_600
+                                                                        , hover [ bg_blue_700 ]
+                                                                        ]
+                                                                    ]
+                                                                    [ text "Add Book" ]
+                                                                ]
                                                            ]
                                                    )
                                             )

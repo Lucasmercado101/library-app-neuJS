@@ -19054,3 +19054,328 @@ grid_cols_none =
 container : String
 container =
     "container"
+
+
+
+-- Cursor (https://tailwindcss.com/docs/cursor)
+{- "cursor-auto" -}
+
+
+cursor_auto : String
+cursor_auto =
+    "cursor-auto"
+
+
+
+{- "cursor-default" -}
+
+
+cursor_default : String
+cursor_default =
+    "cursor-default"
+
+
+
+{- "cursor-pointer" -}
+
+
+cursor_pointer : String
+cursor_pointer =
+    "cursor-pointer"
+
+
+
+{- "cursor-wait" -}
+
+
+cursor_wait : String
+cursor_wait =
+    "cursor-wait"
+
+
+
+{- "cursor-text" -}
+
+
+cursor_text : String
+cursor_text =
+    "cursor-text"
+
+
+
+{- "cursor-move" -}
+
+
+cursor_move : String
+cursor_move =
+    "cursor-move"
+
+
+
+{- "cursor-help" -}
+
+
+cursor_help : String
+cursor_help =
+    "cursor-help"
+
+
+
+{- "cursor-not-allowed" -}
+
+
+cursor_not_allowed : String
+cursor_not_allowed =
+    "cursor-not-allowed"
+
+
+
+{- "cursor-none" -}
+
+
+cursor_none : String
+cursor_none =
+    "cursor-none"
+
+
+
+{- "cursor-context-menu" -}
+
+
+cursor_context_menu : String
+cursor_context_menu =
+    "cursor-context-menu"
+
+
+
+{- "cursor-progress" -}
+
+
+cursor_progress : String
+cursor_progress =
+    "cursor-progress"
+
+
+
+{- "cursor-cell" -}
+
+
+cursor_cell : String
+cursor_cell =
+    "cursor-cell"
+
+
+
+{- "cursor-crosshair" -}
+
+
+cursor_crosshair : String
+cursor_crosshair =
+    "cursor-crosshair"
+
+
+
+{- "cursor-vertical-text" -}
+
+
+cursor_vertical_text : String
+cursor_vertical_text =
+    "cursor-vertical-text"
+
+
+
+{- "cursor-alias" -}
+
+
+cursor_alias : String
+cursor_alias =
+    "cursor-alias"
+
+
+
+{- "cursor-copy" -}
+
+
+cursor_copy : String
+cursor_copy =
+    "cursor-copy"
+
+
+
+{- "cursor-no-drop" -}
+
+
+cursor_no_drop : String
+cursor_no_drop =
+    "cursor-no-drop"
+
+
+
+{- "cursor-grab" -}
+
+
+cursor_grab : String
+cursor_grab =
+    "cursor-grab"
+
+
+
+{- "cursor-grabbing" -}
+
+
+cursor_grabbing : String
+cursor_grabbing =
+    "cursor-grabbing"
+
+
+
+{- "cursor-all-scroll" -}
+
+
+cursor_all_scroll : String
+cursor_all_scroll =
+    "cursor-all-scroll"
+
+
+
+{- "cursor-col-resize" -}
+
+
+cursor_col_resize : String
+cursor_col_resize =
+    "cursor-col-resize"
+
+
+
+{- "cursor-row-resize" -}
+
+
+cursor_row_resize : String
+cursor_row_resize =
+    "cursor-row-resize"
+
+
+
+{- "cursor-n-resize" -}
+
+
+cursor_n_resize : String
+cursor_n_resize =
+    "cursor-n-resize"
+
+
+
+{- "cursor-e-resize" -}
+
+
+cursor_e_resize : String
+cursor_e_resize =
+    "cursor-e-resize"
+
+
+
+{- "cursor-s-resize" -}
+
+
+cursor_s_resize : String
+cursor_s_resize =
+    "cursor-s-resize"
+
+
+
+{- "cursor-w-resize" -}
+
+
+cursor_w_resize : String
+cursor_w_resize =
+    "cursor-w-resize"
+
+
+
+{- "cursor-ne-resize" -}
+
+
+cursor_ne_resize : String
+cursor_ne_resize =
+    "cursor-ne-resize"
+
+
+
+{- "cursor-nw-resize" -}
+
+
+cursor_nw_resize : String
+cursor_nw_resize =
+    "cursor-nw-resize"
+
+
+
+{- "cursor-se-resize" -}
+
+
+cursor_se_resize : String
+cursor_se_resize =
+    "cursor-se-resize"
+
+
+
+{- "cursor-sw-resize" -}
+
+
+cursor_sw_resize : String
+cursor_sw_resize =
+    "cursor-sw-resize"
+
+
+
+{- "cursor-ew-resize" -}
+
+
+cursor_ew_resize : String
+cursor_ew_resize =
+    "cursor-ew-resize"
+
+
+
+{- "cursor-ns-resize" -}
+
+
+cursor_ns_resize : String
+cursor_ns_resize =
+    "cursor-ns-resize"
+
+
+
+{- "cursor-nesw-resize" -}
+
+
+cursor_nesw_resize : String
+cursor_nesw_resize =
+    "cursor-nesw-resize"
+
+
+
+{- "cursor-nwse-resize" -}
+
+
+cursor_nwse_resize : String
+cursor_nwse_resize =
+    "cursor-nwse-resize"
+
+
+
+{- "cursor-zoom-in" -}
+
+
+cursor_zoom_in : String
+cursor_zoom_in =
+    "cursor-zoom-in"
+
+
+
+{- "cursor-zoom-out" -}
+
+
+cursor_zoom_out : String
+cursor_zoom_out =
+    "cursor-zoom-out"

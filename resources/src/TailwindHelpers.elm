@@ -40,6 +40,7 @@ lg strs =
         |> List.map (\str -> "lg:" ++ str)
         |> String.join " "
 
+
 xl : List String -> String
 xl strs =
     strs
@@ -50,7 +51,7 @@ xl strs =
 s2xl : List String -> String
 s2xl strs =
     strs
-        |> List.map (\str -> "s2xl:" ++ str)
+        |> List.map (\str -> "2xl:" ++ str)
         |> String.join " "
 
 

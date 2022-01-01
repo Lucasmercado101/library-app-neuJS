@@ -59,3 +59,22 @@ plusOutline attrs =
             ]
             []
         ]
+
+
+xOutline : List (Svg.Attribute msg) -> Html msg
+xOutline attrs =
+    Svg.svg
+        ([ SA.fill "none"
+         , SA.viewBox "0 0 24 24"
+         , SA.stroke "currentColor"
+         ]
+            ++ attrs
+        )
+        [ Svg.path
+            [ SA.strokeLinecap "round"
+            , SA.strokeLinejoin "round"
+            , SA.strokeWidth "2"
+            , SA.d "M6 18L18 6M6 6l12 12"
+            ]
+            []
+        ]

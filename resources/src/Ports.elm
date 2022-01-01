@@ -4,7 +4,7 @@ import Json.Decode exposing (Decoder)
 import Json.Encode as JE
 
 
-port requestBooksSender : () -> Cmd msg
+port sendRequestBooks : () -> Cmd msg
 
 
 port booksReceiver : (JE.Value -> msg) -> Sub msg

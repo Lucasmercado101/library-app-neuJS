@@ -18611,3 +18611,139 @@ shadow_inner =
 shadow_none : String
 shadow_none =
     "shadow-none"
+
+
+
+-- Overflow (https://tailwindcss.com/docs/overflow)
+{- "overflow-auto" -}
+
+
+overflow_auto : String
+overflow_auto =
+    "overflow-auto"
+
+
+
+{- "overflow-hidden" -}
+
+
+overflow_hidden : String
+overflow_hidden =
+    "overflow-hidden"
+
+
+
+{- "overflow-clip" -}
+
+
+overflow_clip : String
+overflow_clip =
+    "overflow-clip"
+
+
+
+{- "overflow-visible" -}
+
+
+overflow_visible : String
+overflow_visible =
+    "overflow-visible"
+
+
+
+{- "overflow-scroll" -}
+
+
+overflow_scroll : String
+overflow_scroll =
+    "overflow-scroll"
+
+
+
+{- "overflow-x-auto" -}
+
+
+overflow_x_auto : String
+overflow_x_auto =
+    "overflow-x-auto"
+
+
+
+{- "overflow-y-auto" -}
+
+
+overflow_y_auto : String
+overflow_y_auto =
+    "overflow-y-auto"
+
+
+
+{- "overflow-x-hidden" -}
+
+
+overflow_x_hidden : String
+overflow_x_hidden =
+    "overflow-x-hidden"
+
+
+
+{- "overflow-y-hidden" -}
+
+
+overflow_y_hidden : String
+overflow_y_hidden =
+    "overflow-y-hidden"
+
+
+
+{- "overflow-x-clip" -}
+
+
+overflow_x_clip : String
+overflow_x_clip =
+    "overflow-x-clip"
+
+
+
+{- "overflow-y-clip" -}
+
+
+overflow_y_clip : String
+overflow_y_clip =
+    "overflow-y-clip"
+
+
+
+{- "overflow-x-visible" -}
+
+
+overflow_x_visible : String
+overflow_x_visible =
+    "overflow-x-visible"
+
+
+
+{- "overflow-y-visible" -}
+
+
+overflow_y_visible : String
+overflow_y_visible =
+    "overflow-y-visible"
+
+
+
+{- "overflow-x-scroll" -}
+
+
+overflow_x_scroll : String
+overflow_x_scroll =
+    "overflow-x-scroll"
+
+
+
+{- "overflow-y-scroll" -}
+
+
+overflow_y_scroll : String
+overflow_y_scroll =
+    "overflow-y-scroll"

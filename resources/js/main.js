@@ -14,6 +14,20 @@ Neutralino.events.on("windowClose", () => Neutralino.app.exit());
 
 // readFile();
 
-Elm.Main.init({
+const app = Elm.Main.init({
   node: document.getElementById("main")
+});
+
+app.ports.sendRequestBooks.subscribe(async function () {
+  try {
+    const books = await Neutralino.storage.getData("books");
+    return app.ports.booksReceiver.send(books);
+  } catch (e) {
+    return app.ports.booksReceiver.send([]);
+    // TODO: handle error
+    // if (e?.code == "NE_ST_NOSTKEX") {
+    // } else {
+    //   return app.ports.booksReceiver.send([]);
+    // }
+  }
 });

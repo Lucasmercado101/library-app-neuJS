@@ -19379,3 +19379,196 @@ cursor_zoom_in =
 cursor_zoom_out : String
 cursor_zoom_out =
     "cursor-zoom-out"
+
+
+
+--  Align Content (https://tailwindcss.com/docs/align-content)
+{- "content-center" -}
+
+
+content_center : String
+content_center =
+    "content-center"
+
+
+
+{- "content-start" -}
+
+
+content_start : String
+content_start =
+    "content-start"
+
+
+
+{- "content-end" -}
+
+
+content_end : String
+content_end =
+    "content-end"
+
+
+
+{- "content-between" -}
+
+
+content_between : String
+content_between =
+    "content-between"
+
+
+
+{- "content-around" -}
+
+
+content_around : String
+content_around =
+    "content-around"
+
+
+
+{- "content-evenly" -}
+
+
+content_evenly : String
+content_evenly =
+    "content-evenly"
+
+
+
+-- Align Items (https://tailwindcss.com/docs/align-items)
+{- "items-start" -}
+
+
+items_start : String
+items_start =
+    "items-start"
+
+
+
+{- "items-end" -}
+
+
+items_end : String
+items_end =
+    "items-end"
+
+
+
+{- "items-center" -}
+
+
+items_center : String
+items_center =
+    "items-center"
+
+
+
+{- "items-baseline" -}
+
+
+items_baseline : String
+items_baseline =
+    "items-baseline"
+
+
+
+{- "items-stretch" -}
+
+
+items_stretch : String
+items_stretch =
+    "items-stretch"
+
+
+
+-- Justify Content (https://tailwindcss.com/docs/justify-content)
+{- "justify-start" -}
+
+
+justify_start : String
+justify_start =
+    "justify-start"
+
+
+
+{- "justify-end" -}
+
+
+justify_end : String
+justify_end =
+    "justify-end"
+
+
+
+{- "justify-center" -}
+
+
+justify_center : String
+justify_center =
+    "justify-center"
+
+
+
+{- "justify-between" -}
+
+
+justify_between : String
+justify_between =
+    "justify-between"
+
+
+
+{- "justify-around" -}
+
+
+justify_around : String
+justify_around =
+    "justify-around"
+
+
+
+{- "justify-evenly" -}
+
+
+justify_evenly : String
+justify_evenly =
+    "justify-evenly"
+
+
+
+-- Justify Items (https://tailwindcss.com/docs/justify-items)
+{- "justify-items-start" -}
+
+
+justify_items_start : String
+justify_items_start =
+    "justify-items-start"
+
+
+
+{- "justify-items-end" -}
+
+
+justify_items_end : String
+justify_items_end =
+    "justify-items-end"
+
+
+
+{- "justify-items-center" -}
+
+
+justify_items_center : String
+justify_items_center =
+    "justify-items-center"
+
+
+
+{- "justify-items-stretch" -}
+
+
+justify_items_stretch : String
+justify_items_stretch =
+    "justify-items-stretch"

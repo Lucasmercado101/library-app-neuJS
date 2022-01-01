@@ -1,0 +1,19 @@
+module Ports exposing (..)
+
+import Json.Decode exposing (Decoder)
+import Json.Encode as JE
+
+
+port requestBooksSender : () -> Cmd msg
+
+
+port booksReceiver : (JE.Value -> msg) -> Sub msg
+
+
+type alias Book =
+    { title : String
+    , authors : List String
+    , publishedDate : String
+    , dateFinishedReading : String
+    , pages : Int
+    }

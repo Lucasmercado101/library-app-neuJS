@@ -211,7 +211,16 @@ view model =
                         [] ->
                             case model.newBookData of
                                 Just newBookData ->
-                                    form [ TW.apply [ shadow_md, rounded_md, p_4, bg_white ] ]
+                                    form
+                                        [ TW.apply
+                                            [ shadow_md
+                                            , rounded_md
+                                            , p_4
+                                            , bg_white
+                                            , m_auto
+                                            , w_96
+                                            ]
+                                        ]
                                         [ bookOpenOutline
                                             [ [ w_16, h_16, mx_auto ]
                                                 |> String.join " "

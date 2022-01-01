@@ -18903,3 +18903,121 @@ flex_wrap_reverse =
 flex_nowrap : String
 flex_nowrap =
     "flex-nowrap"
+
+
+
+-- Grid Template Columns (https://tailwindcss.com/docs/grid-template-columns)
+{- "grid-cols-1" -}
+
+
+grid_cols_1 : String
+grid_cols_1 =
+    "grid-cols-1"
+
+
+
+{- "grid-cols-2" -}
+
+
+grid_cols_2 : String
+grid_cols_2 =
+    "grid-cols-2"
+
+
+
+{- "grid-cols-3" -}
+
+
+grid_cols_3 : String
+grid_cols_3 =
+    "grid-cols-3"
+
+
+
+{- "grid-cols-4" -}
+
+
+grid_cols_4 : String
+grid_cols_4 =
+    "grid-cols-4"
+
+
+
+{- "grid-cols-5" -}
+
+
+grid_cols_5 : String
+grid_cols_5 =
+    "grid-cols-5"
+
+
+
+{- "grid-cols-6" -}
+
+
+grid_cols_6 : String
+grid_cols_6 =
+    "grid-cols-6"
+
+
+
+{- "grid-cols-7" -}
+
+
+grid_cols_7 : String
+grid_cols_7 =
+    "grid-cols-7"
+
+
+
+{- "grid-cols-8" -}
+
+
+grid_cols_8 : String
+grid_cols_8 =
+    "grid-cols-8"
+
+
+
+{- "grid-cols-9" -}
+
+
+grid_cols_9 : String
+grid_cols_9 =
+    "grid-cols-9"
+
+
+
+{- "grid-cols-10" -}
+
+
+grid_cols_10 : String
+grid_cols_10 =
+    "grid-cols-10"
+
+
+
+{- "grid-cols-11" -}
+
+
+grid_cols_11 : String
+grid_cols_11 =
+    "grid-cols-11"
+
+
+
+{- "grid-cols-12" -}
+
+
+grid_cols_12 : String
+grid_cols_12 =
+    "grid-cols-12"
+
+
+
+{- "grid-cols-none" -}
+
+
+grid_cols_none : String
+grid_cols_none =
+    "grid-cols-none"

@@ -156,7 +156,7 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "Title"
     , body =
-        [ div [ TW.apply [ bg_gray_100, h_screen, w_screen ] ]
+        [ div [ TW.apply [ bg_gray_100, h_screen, w_screen, overflow_auto ] ]
             [ div
                 [ TW.apply
                     [ p_36

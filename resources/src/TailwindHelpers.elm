@@ -19572,3 +19572,22 @@ justify_items_center =
 justify_items_stretch : String
 justify_items_stretch =
     "justify-items-stretch"
+
+
+
+-- Flex Shrink (https://tailwindcss.com/docs/flex-shrink)
+{- "shrink" -}
+
+
+shrink : String
+shrink =
+    "shrink"
+
+
+
+{- "shrink-0" -}
+
+
+shrink_0 : String
+shrink_0 =
+    "shrink-0"

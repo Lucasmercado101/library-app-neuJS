@@ -46,13 +46,7 @@ init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
       , url = url
-      , newBookData =
-            Just
-                { title = ""
-                , authors = Array.fromList [ "" ]
-                }
-
-      --   , newBookData = Nothing
+      , newBookData = Nothing
       }
     , Cmd.none
     )

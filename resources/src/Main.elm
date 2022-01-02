@@ -12,8 +12,18 @@ import Json.Decode
 import Ports
 import Svg
 import Svg.Attributes
-import SvgIcons exposing (bookOpenOutline, plusOutline, xOutline)
+import SvgIcons
+    exposing
+        ( bookOpenOutline
+        , photographOutline
+        , plusOutline
+        , plusSmOutline
+        , solidPlus
+        , thinPhotographOutline
+        , xOutline
+        )
 import TailwindHelpers as TW exposing (..)
+import Task
 import Url
 
 
@@ -39,6 +49,8 @@ type alias NewBookData =
     , publishedDate : String
     , pages : String
     , dateFinishedReading : String
+    , cover : Maybe File
+    , coverUrl : Maybe String
     }
 
 
@@ -84,6 +96,7 @@ type NewBookMsg
     | ChangeReadDate String
     | CoverLoaded File
     | RequestCover
+    | GotCoverUrl String
     | CreateNewBook
 
 
@@ -112,6 +125,8 @@ update msg model =
                         , publishedDate = ""
                         , pages = "1"
                         , dateFinishedReading = ""
+                        , cover = Nothing
+                        , coverUrl = Nothing
                         }
               }
             , Cmd.none
@@ -206,7 +221,26 @@ update msg model =
                             ( model, Cmd.map GotNewBookMsg (Select.file [ "image/*" ] CoverLoaded) )
 
                         CoverLoaded file ->
-                            ( model, Cmd.none )
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | cover = Just file
+                                        }
+                              }
+                            , File.toUrl file |> Task.perform (\l -> GotNewBookMsg (GotCoverUrl l))
+                            )
+
+                        GotCoverUrl url ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | coverUrl = Just url
+                                        }
+                              }
+                            , Cmd.none
+                            )
 
                         CreateNewBook ->
                             ( { model | newBookData = Nothing }
@@ -463,46 +497,68 @@ view model =
                                                                     ]
                                                                     []
                                                                 ]
-                                                           , column []
-                                                                [ label [ for "book-cover" ] [ p [] [ text "Book Cover" ] ]
-                                                                , input
-                                                                    [ id "book-cover"
-                                                                    , type_ "date"
-                                                                    , value newBookData.dateFinishedReading
-                                                                    , required False
-                                                                    , onInput (\l -> ChangeReadDate l |> GotNewBookMsg)
-                                                                    , TW.apply
-                                                                        [ border
-                                                                        , border_gray_300
-                                                                        , p_2
-                                                                        , pl_3
-                                                                        , w_full
-                                                                        , rounded_md
+                                                           , case newBookData.cover of
+                                                                Just coverImage ->
+                                                                    row [ TW.apply [ justify_evenly ] ]
+                                                                        [ img
+                                                                            [ TW.apply
+                                                                                [ bg_black
+                                                                                , w_40
+                                                                                , h_64
+                                                                                , object_center
+                                                                                , shrink_0
+                                                                                , object_cover
+                                                                                ]
+                                                                            , src (newBookData.coverUrl |> Maybe.withDefault "")
+                                                                            ]
+                                                                            []
+                                                                        , column [ TW.apply [ mt_auto, gap_y_2 ] ]
+                                                                            [ blueButton [] [ text "Change Cover" ]
+                                                                            , blueButton [] [ text "Remove Cover" ]
+                                                                            ]
                                                                         ]
-                                                                    ]
-                                                                    []
-                                                                ]
-                                                           , button
-                                                                [ type_ "button"
-                                                                , onClick (GotNewBookMsg RequestCover)
-                                                                , TW.apply
-                                                                    [ flex
-                                                                    , px_3
-                                                                    , py_2
-                                                                    , gap_x_2
-                                                                    , font_semibold
-                                                                    , block
-                                                                    , rounded
-                                                                    , ml_auto
-                                                                    , text_white
-                                                                    , shadow_md
-                                                                    , bg_blue_600
-                                                                    , hover [ bg_blue_700 ]
-                                                                    , w_full
-                                                                    , justify_center
-                                                                    ]
-                                                                ]
-                                                                [ text "Add Cover" ]
+
+                                                                Nothing ->
+                                                                    column []
+                                                                        [ p [] [ text "Book Cover" ]
+                                                                        , div
+                                                                            [ onClick (GotNewBookMsg RequestCover)
+                                                                            , TW.apply
+                                                                                [ h_64
+                                                                                , w_full
+                                                                                , rounded_md
+                                                                                , border_dashed
+                                                                                , border_gray_300
+                                                                                , border_2
+                                                                                , flex
+                                                                                , cursor_pointer
+                                                                                ]
+                                                                            ]
+                                                                            [ column [ TW.apply [ m_auto ] ]
+                                                                                [ div [ TW.apply [ relative, w_16, h_16, m_auto ] ]
+                                                                                    [ thinPhotographOutline
+                                                                                        [ [ text_gray_400 ]
+                                                                                            |> String.join " "
+                                                                                            |> Svg.Attributes.class
+                                                                                        ]
+                                                                                    , solidPlus
+                                                                                        [ [ absolute
+                                                                                          , bg_white
+                                                                                          , rounded_full
+                                                                                          , text_gray_400
+                                                                                          , w_6
+                                                                                          , h_6
+                                                                                          , bottom_0
+                                                                                          , right_0
+                                                                                          ]
+                                                                                            |> String.join " "
+                                                                                            |> Svg.Attributes.class
+                                                                                        ]
+                                                                                    ]
+                                                                                , p [ TW.apply [ font_bold ] ] [ text "Choose or drag an image" ]
+                                                                                ]
+                                                                            ]
+                                                                        ]
                                                            , row []
                                                                 [ button
                                                                     [ type_ "submit"
@@ -722,6 +778,26 @@ removeFromList i xs =
 removeFromArray : Int -> Array a -> Array a
 removeFromArray i =
     Array.toList >> removeFromList i >> Array.fromList
+
+
+blueButton attrs content =
+    button
+        ([ TW.apply
+            [ px_3
+            , py_2
+            , gap_x_2
+            , font_semibold
+            , block
+            , rounded
+            , text_white
+            , shadow_md
+            , bg_blue_600
+            , hover [ bg_blue_700 ]
+            ]
+         ]
+            ++ attrs
+        )
+        content
 
 
 

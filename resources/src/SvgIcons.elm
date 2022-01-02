@@ -97,3 +97,22 @@ photographOutline attrs =
             ]
             []
         ]
+
+
+plusSmOutline : List (Svg.Attribute msg) -> Html msg
+plusSmOutline attrs =
+    Svg.svg
+        ([ SA.fill "none"
+         , SA.viewBox "0 0 24 24"
+         , SA.stroke "currentColor"
+         ]
+            ++ attrs
+        )
+        [ Svg.path
+            [ SA.strokeLinecap "round"
+            , SA.strokeLinejoin "round"
+            , SA.strokeWidth "2"
+            , SA.d "M12 6v6m0 0v6m0-6h6m-6 0H6"
+            ]
+            []
+        ]

@@ -35,6 +35,7 @@ type alias NewBookData =
     { title : String
     , authors : Array String
     , publishedDate : String
+    , pages : String
     }
 
 
@@ -76,6 +77,7 @@ type NewBookMsg
     | ChangeAuthor Int String
     | RemoveAuthor Int
     | ChangeDate String
+    | ChangePages String
     | CreateNewBook
 
 
@@ -102,6 +104,7 @@ update msg model =
                         { title = ""
                         , authors = Array.fromList [ "" ]
                         , publishedDate = ""
+                        , pages = "1"
                         }
               }
             , Cmd.none
@@ -170,12 +173,24 @@ update msg model =
                             , Cmd.none
                             )
 
+                        ChangePages newPages ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | pages = newPages
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
                         CreateNewBook ->
                             ( { model | newBookData = Nothing }
                             , Ports.sendCreateNewBook
                                 { title = newBookData.title
                                 , authors = Array.toList newBookData.authors
                                 , publishedDate = newBookData.publishedDate
+                                , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
                                 }
                             )
 
@@ -360,13 +375,33 @@ view model =
                                                                     [ text "Add Author" ]
                                                                 ]
                                                            , column []
-                                                                [ label [ for "book-title" ] [ p [] [ text "Published Date" ] ]
+                                                                [ label [ for "book-published-date" ] [ p [] [ text "Published Date" ] ]
                                                                 , input
-                                                                    [ id "book-title"
+                                                                    [ id "book-published-date"
                                                                     , type_ "date"
                                                                     , value newBookData.publishedDate
                                                                     , required True
                                                                     , onInput (\l -> ChangeDate l |> GotNewBookMsg)
+                                                                    , TW.apply
+                                                                        [ border
+                                                                        , border_gray_300
+                                                                        , p_2
+                                                                        , pl_3
+                                                                        , w_full
+                                                                        , rounded_md
+                                                                        ]
+                                                                    ]
+                                                                    []
+                                                                ]
+                                                           , column []
+                                                                [ label [ for "book-total-pages" ] [ p [] [ text "Total Pages" ] ]
+                                                                , input
+                                                                    [ id "book-total-pages"
+                                                                    , type_ "number"
+                                                                    , Html.Attributes.min "1"
+                                                                    , value newBookData.pages
+                                                                    , required True
+                                                                    , onInput (\l -> ChangePages l |> GotNewBookMsg)
                                                                     , TW.apply
                                                                         [ border
                                                                         , border_gray_300

@@ -17,6 +17,7 @@ type alias NewBook =
     { title : String
     , authors : List String
     , publishedDate : String
+    , pages : Int
     }
 
 

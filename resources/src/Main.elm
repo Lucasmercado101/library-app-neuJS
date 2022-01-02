@@ -36,6 +36,7 @@ type alias NewBookData =
     , authors : Array String
     , publishedDate : String
     , pages : String
+    , dateFinishedReading : String
     }
 
 
@@ -76,8 +77,9 @@ type NewBookMsg
     | AddAuthor
     | ChangeAuthor Int String
     | RemoveAuthor Int
-    | ChangeDate String
+    | ChangePublishedDate String
     | ChangePages String
+    | ChangeReadDate String
     | CreateNewBook
 
 
@@ -105,6 +107,7 @@ update msg model =
                         , authors = Array.fromList [ "" ]
                         , publishedDate = ""
                         , pages = "1"
+                        , dateFinishedReading = ""
                         }
               }
             , Cmd.none
@@ -162,7 +165,7 @@ update msg model =
                             , Cmd.none
                             )
 
-                        ChangeDate newDate ->
+                        ChangePublishedDate newDate ->
                             ( { model
                                 | newBookData =
                                     Just
@@ -179,6 +182,17 @@ update msg model =
                                     Just
                                         { newBookData
                                             | pages = newPages
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
+                        ChangeReadDate newRead ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | dateFinishedReading = newRead
                                         }
                               }
                             , Cmd.none
@@ -381,7 +395,7 @@ view model =
                                                                     , type_ "date"
                                                                     , value newBookData.publishedDate
                                                                     , required True
-                                                                    , onInput (\l -> ChangeDate l |> GotNewBookMsg)
+                                                                    , onInput (\l -> ChangePublishedDate l |> GotNewBookMsg)
                                                                     , TW.apply
                                                                         [ border
                                                                         , border_gray_300
@@ -402,6 +416,25 @@ view model =
                                                                     , value newBookData.pages
                                                                     , required True
                                                                     , onInput (\l -> ChangePages l |> GotNewBookMsg)
+                                                                    , TW.apply
+                                                                        [ border
+                                                                        , border_gray_300
+                                                                        , p_2
+                                                                        , pl_3
+                                                                        , w_full
+                                                                        , rounded_md
+                                                                        ]
+                                                                    ]
+                                                                    []
+                                                                ]
+                                                           , column []
+                                                                [ label [ for "book-read-date" ] [ p [] [ text "Read Date" ] ]
+                                                                , input
+                                                                    [ id "book-read-date"
+                                                                    , type_ "date"
+                                                                    , value newBookData.dateFinishedReading
+                                                                    , required False
+                                                                    , onInput (\l -> ChangeReadDate l |> GotNewBookMsg)
                                                                     , TW.apply
                                                                         [ border
                                                                         , border_gray_300

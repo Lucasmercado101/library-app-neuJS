@@ -3,6 +3,8 @@ module Main exposing (main)
 import Array exposing (Array)
 import Browser
 import Browser.Navigation as Nav
+import File exposing (File)
+import File.Select as Select
 import Html exposing (..)
 import Html.Attributes exposing (for, id, required, src, style, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
@@ -80,6 +82,8 @@ type NewBookMsg
     | ChangePublishedDate String
     | ChangePages String
     | ChangeReadDate String
+    | CoverLoaded File
+    | RequestCover
     | CreateNewBook
 
 
@@ -198,6 +202,12 @@ update msg model =
                             , Cmd.none
                             )
 
+                        RequestCover ->
+                            ( model, Cmd.map GotNewBookMsg (Select.file [ "image/*" ] CoverLoaded) )
+
+                        CoverLoaded file ->
+                            ( model, Cmd.none )
+
                         CreateNewBook ->
                             ( { model | newBookData = Nothing }
                             , Ports.sendCreateNewBook
@@ -205,6 +215,7 @@ update msg model =
                                 , authors = Array.toList newBookData.authors
                                 , publishedDate = newBookData.publishedDate
                                 , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
+                                , bookCoverPath = ""
                                 , dateFinishedReading =
                                     if newBookData.dateFinishedReading == "" then
                                         Nothing
@@ -452,6 +463,46 @@ view model =
                                                                     ]
                                                                     []
                                                                 ]
+                                                           , column []
+                                                                [ label [ for "book-cover" ] [ p [] [ text "Book Cover" ] ]
+                                                                , input
+                                                                    [ id "book-cover"
+                                                                    , type_ "date"
+                                                                    , value newBookData.dateFinishedReading
+                                                                    , required False
+                                                                    , onInput (\l -> ChangeReadDate l |> GotNewBookMsg)
+                                                                    , TW.apply
+                                                                        [ border
+                                                                        , border_gray_300
+                                                                        , p_2
+                                                                        , pl_3
+                                                                        , w_full
+                                                                        , rounded_md
+                                                                        ]
+                                                                    ]
+                                                                    []
+                                                                ]
+                                                           , button
+                                                                [ type_ "button"
+                                                                , onClick (GotNewBookMsg RequestCover)
+                                                                , TW.apply
+                                                                    [ flex
+                                                                    , px_3
+                                                                    , py_2
+                                                                    , gap_x_2
+                                                                    , font_semibold
+                                                                    , block
+                                                                    , rounded
+                                                                    , ml_auto
+                                                                    , text_white
+                                                                    , shadow_md
+                                                                    , bg_blue_600
+                                                                    , hover [ bg_blue_700 ]
+                                                                    , w_full
+                                                                    , justify_center
+                                                                    ]
+                                                                ]
+                                                                [ text "Add Cover" ]
                                                            , row []
                                                                 [ button
                                                                     [ type_ "submit"

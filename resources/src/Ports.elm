@@ -19,16 +19,18 @@ type alias Book =
     , publishedDate : String
     , dateFinishedReading : Maybe String
     , pages : Int
+    , bookCoverPath : String
     }
 
 
 bookDecoder : Decoder (List Book)
 bookDecoder =
     JD.list
-        (JD.map5 Book
+        (JD.map6 Book
             (JD.field "title" JD.string)
             (JD.field "authors" (JD.list JD.string))
             (JD.field "publishedDate" JD.string)
             (JD.field "dateFinishedReading" (JD.maybe JD.string))
             (JD.field "pages" JD.int)
+            (JD.field "bookCoverPath" JD.string)
         )

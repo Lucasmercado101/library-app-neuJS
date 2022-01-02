@@ -205,6 +205,12 @@ update msg model =
                                 , authors = Array.toList newBookData.authors
                                 , publishedDate = newBookData.publishedDate
                                 , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
+                                , dateFinishedReading =
+                                    if newBookData.dateFinishedReading == "" then
+                                        Nothing
+
+                                    else
+                                        Just newBookData.dateFinishedReading
                                 }
                             )
 

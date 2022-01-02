@@ -10,15 +10,7 @@ port sendRequestBooks : () -> Cmd msg
 port booksReceiver : (JE.Value -> msg) -> Sub msg
 
 
-port sendCreateNewBook : NewBook -> Cmd msg
-
-
-type alias NewBook =
-    { title : String
-    , authors : List String
-    , publishedDate : String
-    , pages : Int
-    }
+port sendCreateNewBook : Book -> Cmd msg
 
 
 type alias Book =

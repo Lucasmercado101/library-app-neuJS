@@ -21,7 +21,7 @@ const app = Elm.Main.init({
 app.ports.sendRequestBooks.subscribe(async function () {
   try {
     const books = await Neutralino.storage.getData("books");
-    return app.ports.booksReceiver.send(books);
+    return app.ports.booksReceiver.send(JSON.parse(books));
   } catch (e) {
     return app.ports.booksReceiver.send([]);
     // TODO: handle error
@@ -40,6 +40,7 @@ app.ports.sendCreateNewBook.subscribe(async function (book) {
     } catch (e) {
       // TODO: handle error
     }
+
     books.push(book);
     await Neutralino.storage.setData("books", JSON.stringify(books));
     return app.ports.booksReceiver.send(books);

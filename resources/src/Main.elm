@@ -34,6 +34,7 @@ main =
 type alias NewBookData =
     { title : String
     , authors : Array String
+    , publishedDate : String
     }
 
 
@@ -74,6 +75,7 @@ type NewBookMsg
     | AddAuthor
     | ChangeAuthor Int String
     | RemoveAuthor Int
+    | ChangeDate String
     | CreateNewBook
 
 
@@ -99,6 +101,7 @@ update msg model =
                     Just
                         { title = ""
                         , authors = Array.fromList [ "" ]
+                        , publishedDate = ""
                         }
               }
             , Cmd.none
@@ -156,11 +159,23 @@ update msg model =
                             , Cmd.none
                             )
 
+                        ChangeDate newDate ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | publishedDate = newDate
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
                         CreateNewBook ->
                             ( { model | newBookData = Nothing }
                             , Ports.sendCreateNewBook
                                 { title = newBookData.title
                                 , authors = Array.toList newBookData.authors
+                                , publishedDate = newBookData.publishedDate
                                 }
                             )
 
@@ -343,6 +358,25 @@ view model =
                                                                     [ TW.apply [ w_full ]
                                                                     ]
                                                                     [ text "Add Author" ]
+                                                                ]
+                                                           , column []
+                                                                [ label [ for "book-title" ] [ p [] [ text "Published Date" ] ]
+                                                                , input
+                                                                    [ id "book-title"
+                                                                    , type_ "date"
+                                                                    , value newBookData.publishedDate
+                                                                    , required True
+                                                                    , onInput (\l -> ChangeDate l |> GotNewBookMsg)
+                                                                    , TW.apply
+                                                                        [ border
+                                                                        , border_gray_300
+                                                                        , p_2
+                                                                        , pl_3
+                                                                        , w_full
+                                                                        , rounded_md
+                                                                        ]
+                                                                    ]
+                                                                    []
                                                                 ]
                                                            , row []
                                                                 [ button

@@ -16,6 +16,7 @@ port sendCreateNewBook : NewBook -> Cmd msg
 type alias NewBook =
     { title : String
     , authors : List String
+    , publishedDate : String
     }
 
 

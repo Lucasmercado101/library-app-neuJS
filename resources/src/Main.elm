@@ -102,6 +102,7 @@ type NewBookMsg
     | CoverLoaded File
     | RequestCover
     | GotCoverUrl String
+    | RemoveCover
     | CreateNewBook
 
 
@@ -264,6 +265,18 @@ update msg model =
                                     Just
                                         { newBookData
                                             | coverUrl = Just url
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
+                        RemoveCover ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | cover = Nothing
+                                            , coverUrl = Nothing
                                         }
                               }
                             , Cmd.none
@@ -545,7 +558,11 @@ view model =
                                                                                 , onClick (GotNewBookMsg RequestCover)
                                                                                 ]
                                                                                 [ text "Change Cover" ]
-                                                                            , blueButton [ type_ "button" ] [ text "Remove Cover" ]
+                                                                            , blueButton
+                                                                                [ type_ "button"
+                                                                                , onClick (GotNewBookMsg RemoveCover)
+                                                                                ]
+                                                                                [ text "Remove Cover" ]
                                                                             ]
                                                                         ]
 

@@ -19591,3 +19591,22 @@ shrink =
 shrink_0 : String
 shrink_0 =
     "shrink-0"
+
+
+
+-- Pointer Events (https://tailwindcss.com/docs/pointer-events)
+{- "pointer-events-none" -}
+
+
+pointer_events_none : String
+pointer_events_none =
+    "pointer-events-none"
+
+
+
+{- "pointer-events-auto" -}
+
+
+pointer_events_auto : String
+pointer_events_auto =
+    "pointer-events-auto"

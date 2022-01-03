@@ -7,8 +7,8 @@ import File exposing (File)
 import File.Select as Select
 import Html exposing (..)
 import Html.Attributes exposing (for, id, required, src, style, type_, value)
-import Html.Events exposing (onClick, onInput, onSubmit)
-import Json.Decode
+import Html.Events exposing (onClick, onInput, onSubmit, preventDefaultOn)
+import Json.Decode as JD
 import Ports
 import Svg
 import Svg.Attributes
@@ -59,6 +59,7 @@ type alias Model =
     , url : Url.Url
     , newBookData : Maybe NewBookData
     , state : State
+    , hover : Bool
     }
 
 
@@ -73,6 +74,7 @@ init _ url key =
       , url = url
       , newBookData = Nothing
       , state = FetchingBooks
+      , hover = False
       }
     , Ports.sendRequestBooks ()
     )
@@ -83,7 +85,10 @@ type Msg
     | UrlChanged Url.Url
     | AddNewBook
     | GotNewBookMsg NewBookMsg
-    | GotBooks (Result Json.Decode.Error (List Ports.Book))
+    | GotBooks (Result JD.Error (List Ports.Book))
+    | DragEnter
+    | DragLeave
+    | GotFiles File (List File)
 
 
 type NewBookMsg
@@ -141,6 +146,28 @@ update msg model =
 
                 Err _ ->
                     ( model, Cmd.none )
+
+        DragEnter ->
+            ( { model | hover = True }, Cmd.none )
+
+        DragLeave ->
+            ( { model | hover = False }, Cmd.none )
+
+        GotFiles file files ->
+            case model.newBookData of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just newBookData ->
+                    ( { model
+                        | newBookData =
+                            Just
+                                { newBookData
+                                    | cover = Just file
+                                }
+                      }
+                    , File.toUrl file |> Task.perform (\l -> GotNewBookMsg (GotCoverUrl l))
+                    )
 
         GotNewBookMsg newBookMsg ->
             case model.newBookData of
@@ -267,7 +294,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Ports.booksReceiver (\l -> Json.Decode.decodeValue Ports.bookDecoder l |> GotBooks)
+    Ports.booksReceiver (\l -> JD.decodeValue Ports.bookDecoder l |> GotBooks)
 
 
 view : Model -> Browser.Document Msg
@@ -523,6 +550,10 @@ view model =
                                                                         [ p [] [ text "Book Cover" ]
                                                                         , div
                                                                             [ onClick (GotNewBookMsg RequestCover)
+                                                                            , hijackOn "dragenter" (JD.succeed DragEnter)
+                                                                            , hijackOn "dragover" (JD.succeed DragEnter)
+                                                                            , hijackOn "dragleave" (JD.succeed DragLeave)
+                                                                            , hijackOn "drop" dropDecoder
                                                                             , TW.apply
                                                                                 [ h_64
                                                                                 , w_full
@@ -532,12 +563,23 @@ view model =
                                                                                 , border_2
                                                                                 , flex
                                                                                 , cursor_pointer
+                                                                                , if model.hover then
+                                                                                    border_blue_300
+
+                                                                                  else
+                                                                                    ""
                                                                                 ]
                                                                             ]
-                                                                            [ column [ TW.apply [ m_auto ] ]
+                                                                            [ column [ TW.apply [ m_auto, pointer_events_none ] ]
                                                                                 [ div [ TW.apply [ relative, w_16, h_16, m_auto ] ]
                                                                                     [ thinPhotographOutline
-                                                                                        [ [ text_gray_400 ]
+                                                                                        [ [ text_gray_400
+                                                                                          , if model.hover then
+                                                                                                text_blue_300
+
+                                                                                            else
+                                                                                                ""
+                                                                                          ]
                                                                                             |> String.join " "
                                                                                             |> Svg.Attributes.class
                                                                                         ]
@@ -550,6 +592,11 @@ view model =
                                                                                           , h_6
                                                                                           , bottom_0
                                                                                           , right_0
+                                                                                          , if model.hover then
+                                                                                                text_blue_300
+
+                                                                                            else
+                                                                                                ""
                                                                                           ]
                                                                                             |> String.join " "
                                                                                             |> Svg.Attributes.class
@@ -812,3 +859,22 @@ column attrs content =
 row : List (Attribute msg) -> List (Html msg) -> Html msg
 row attrs content =
     div (TW.apply [ flex, flex_row ] :: attrs) content
+
+
+
+-- https://elm-lang.org/examples/drag-and-drop
+
+
+dropDecoder : JD.Decoder Msg
+dropDecoder =
+    JD.at [ "dataTransfer", "files" ] (JD.oneOrMore GotFiles File.decoder)
+
+
+hijackOn : String -> JD.Decoder msg -> Attribute msg
+hijackOn event decoder =
+    preventDefaultOn event (JD.map hijack decoder)
+
+
+hijack : msg -> ( msg, Bool )
+hijack msg =
+    ( msg, True )

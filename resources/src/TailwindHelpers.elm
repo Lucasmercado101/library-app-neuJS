@@ -2,11 +2,22 @@ module TailwindHelpers exposing (..)
 
 import Html exposing (Attribute)
 import Html.Attributes exposing (class)
+import Svg
+import Svg.Attributes
 
 
 apply : List String -> Attribute msg
 apply classes =
-    class (String.join " " classes)
+    classes
+        |> String.join " "
+        |> class
+
+
+applyIcon : List String -> Svg.Attribute msg
+applyIcon classes =
+    classes
+        |> String.join " "
+        |> Svg.Attributes.class
 
 
 hover : List String -> String

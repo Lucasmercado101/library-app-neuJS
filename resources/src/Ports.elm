@@ -8,10 +8,22 @@ import Json.Encode as JE
 port sendRequestBooks : () -> Cmd msg
 
 
+port sendBase64Image : Base64Image -> Cmd msg
+
+
+type alias Base64Image =
+    { data : String
+    , name : String
+    }
+
+
 port booksReceiver : (JE.Value -> msg) -> Sub msg
 
 
 port sendCreateNewBook : Book -> Cmd msg
+
+
+port base64ImageConfirmationReceiver : (JE.Value -> msg) -> Sub msg
 
 
 type alias Book =
@@ -20,7 +32,7 @@ type alias Book =
     , publishedDate : String
     , dateFinishedReading : Maybe String
     , pages : Int
-    , bookCoverPath : String
+    , bookCoverPath : Maybe String
     , isbn : String
     }
 
@@ -34,6 +46,6 @@ bookDecoder =
             (JD.field "publishedDate" JD.string)
             (JD.field "dateFinishedReading" (JD.maybe JD.string))
             (JD.field "pages" JD.int)
-            (JD.field "bookCoverPath" JD.string)
+            (JD.field "bookCoverPath" (JD.maybe JD.string))
             (JD.field "isbn" JD.string)
         )

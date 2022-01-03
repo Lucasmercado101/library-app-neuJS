@@ -49,3 +49,14 @@ app.ports.sendCreateNewBook.subscribe(async function (book) {
     // return app.ports.booksReceiver.send([]);
   }
 });
+
+app.ports.sendBase64Image.subscribe(async function (base64Data) {
+  // TODO check if isbn already exists
+  const { data, name } = base64Data;
+  try {
+    await Neutralino.storage.setData("base64-cover-" + name, data);
+    app.ports.base64ImageConfirmationReceiver.send(true);
+  } catch (e) {
+    console.log(e);
+  }
+});

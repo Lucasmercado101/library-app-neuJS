@@ -43,7 +43,13 @@ main =
         }
 
 
-type alias NewBookData =
+type NewBookStatus
+    = NotCreating
+    | EditingNewData NewBook
+    | Creating NewBook
+
+
+type alias NewBook =
     { title : String
     , authors : Array String
     , publishedDate : String
@@ -58,7 +64,7 @@ type alias NewBookData =
 type alias Model =
     { key : Nav.Key
     , url : Url.Url
-    , newBookData : Maybe NewBookData
+    , newBookData : NewBookStatus
     , state : State
     , hover : Bool
     }
@@ -73,7 +79,7 @@ init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
     ( { key = key
       , url = url
-      , newBookData = Nothing
+      , newBookData = NotCreating
       , state = FetchingBooks
       , hover = False
       }
@@ -89,6 +95,7 @@ type Msg
     | GotBooks (Result JD.Error (List Ports.Book))
     | DragEnter
     | DragLeave
+    | GotSendBase64ImageResponse (Result JD.Error Bool)
     | GotFiles File (List File)
 
 
@@ -127,7 +134,7 @@ update msg model =
         AddNewBook ->
             ( { model
                 | newBookData =
-                    Just
+                    EditingNewData
                         { title = ""
                         , authors = Array.fromList [ "" ]
                         , publishedDate = ""
@@ -144,9 +151,21 @@ update msg model =
         GotBooks res ->
             case res of
                 Ok books ->
-                    ( { model | state = FetchedBooks books }
-                    , Cmd.none
-                    )
+                    case model.newBookData of
+                        Creating _ ->
+                            ( { model | newBookData = NotCreating, state = FetchedBooks books }
+                            , Cmd.none
+                            )
+
+                        NotCreating ->
+                            ( { model | state = FetchedBooks books }
+                            , Cmd.none
+                            )
+
+                        EditingNewData _ ->
+                            ( { model | state = FetchedBooks books }
+                            , Cmd.none
+                            )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -159,13 +178,10 @@ update msg model =
 
         GotFiles file files ->
             case model.newBookData of
-                Nothing ->
-                    ( model, Cmd.none )
-
-                Just newBookData ->
+                EditingNewData newBookData ->
                     ( { model
                         | newBookData =
-                            Just
+                            EditingNewData
                                 { newBookData
                                     | cover = Just file
                                 }
@@ -173,19 +189,57 @@ update msg model =
                     , File.toUrl file |> Task.perform (\l -> GotNewBookMsg (GotCoverUrl l))
                     )
 
+                NotCreating ->
+                    ( model, Cmd.none )
+
+                Creating _ ->
+                    ( model, Cmd.none )
+
+        GotSendBase64ImageResponse res ->
+            case res of
+                Ok _ ->
+                    case model.newBookData of
+                        Creating newBookData ->
+                            ( model
+                            , Ports.sendCreateNewBook
+                                { title = newBookData.title
+                                , authors = Array.toList newBookData.authors
+                                , publishedDate = newBookData.publishedDate
+                                , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
+                                , bookCoverPath = Just ("base64-cover-" ++ newBookData.isbn)
+                                , dateFinishedReading =
+                                    if newBookData.dateFinishedReading == "" then
+                                        Nothing
+
+                                    else
+                                        Just newBookData.dateFinishedReading
+                                , isbn = newBookData.isbn
+                                }
+                            )
+
+                        NotCreating ->
+                            ( model, Cmd.none )
+
+                        EditingNewData _ ->
+                            ( model, Cmd.none )
+
+                -- TODO handle if failed to save image
+                Err _ ->
+                    ( model, Cmd.none )
+
         GotNewBookMsg newBookMsg ->
             case model.newBookData of
-                Just newBookData ->
+                EditingNewData newBookData ->
                     case newBookMsg of
                         ChangeTitle newTitle ->
-                            ( { model | newBookData = Just { newBookData | title = newTitle } }
+                            ( { model | newBookData = EditingNewData { newBookData | title = newTitle } }
                             , Cmd.none
                             )
 
                         AddAuthor ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | authors = Array.push "" newBookData.authors
                                         }
@@ -196,7 +250,7 @@ update msg model =
                         ChangeAuthor index newAuthor ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | authors = Array.set index newAuthor newBookData.authors
                                         }
@@ -207,7 +261,7 @@ update msg model =
                         RemoveAuthor index ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | authors = removeFromArray index newBookData.authors
                                         }
@@ -218,7 +272,7 @@ update msg model =
                         ChangePublishedDate newDate ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | publishedDate = newDate
                                         }
@@ -229,7 +283,7 @@ update msg model =
                         ChangePages newPages ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | pages = newPages
                                         }
@@ -240,7 +294,7 @@ update msg model =
                         ChangeReadDate newRead ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | dateFinishedReading = newRead
                                         }
@@ -254,7 +308,7 @@ update msg model =
                         CoverLoaded file ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | cover = Just file
                                         }
@@ -265,7 +319,7 @@ update msg model =
                         GotCoverUrl url ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | coverUrl = Just url
                                         }
@@ -276,7 +330,7 @@ update msg model =
                         RemoveCover ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | cover = Nothing
                                             , coverUrl = Nothing
@@ -288,7 +342,7 @@ update msg model =
                         ChangeISBN newIsbn ->
                             ( { model
                                 | newBookData =
-                                    Just
+                                    EditingNewData
                                         { newBookData
                                             | isbn = newIsbn
                                         }
@@ -297,32 +351,42 @@ update msg model =
                             )
 
                         CreateNewBook ->
-                            ( { model | newBookData = Nothing }
-                            , Ports.sendCreateNewBook
-                                { title = newBookData.title
-                                , authors = Array.toList newBookData.authors
-                                , publishedDate = newBookData.publishedDate
-                                , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
-                                , bookCoverPath = ""
-                                , dateFinishedReading =
-                                    if newBookData.dateFinishedReading == "" then
-                                        Nothing
+                            case newBookData.coverUrl of
+                                -- An image was uploaded...
+                                Just coverUrl ->
+                                    ( { model | newBookData = Creating newBookData }, Ports.sendBase64Image { data = coverUrl, name = newBookData.isbn } )
 
-                                    else
-                                        Just newBookData.dateFinishedReading
-                                , isbn = newBookData.isbn
-                                }
-                            )
+                                Nothing ->
+                                    ( { model | newBookData = Creating newBookData }
+                                    , Ports.sendCreateNewBook
+                                        { title = newBookData.title
+                                        , authors = Array.toList newBookData.authors
+                                        , publishedDate = newBookData.publishedDate
+                                        , pages = newBookData.pages |> String.toInt |> Maybe.withDefault 0
+                                        , bookCoverPath = Nothing
+                                        , dateFinishedReading =
+                                            if newBookData.dateFinishedReading == "" then
+                                                Nothing
 
-                Nothing ->
-                    ( model
-                    , Cmd.none
-                    )
+                                            else
+                                                Just newBookData.dateFinishedReading
+                                        , isbn = newBookData.isbn
+                                        }
+                                    )
+
+                NotCreating ->
+                    ( model, Cmd.none )
+
+                Creating _ ->
+                    ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Ports.booksReceiver (\l -> JD.decodeValue Ports.bookDecoder l |> GotBooks)
+    Sub.batch
+        [ Ports.booksReceiver (\l -> JD.decodeValue Ports.bookDecoder l |> GotBooks)
+        , Ports.base64ImageConfirmationReceiver (\l -> JD.decodeValue JD.bool l |> GotSendBase64ImageResponse)
+        ]
 
 
 view : Model -> Browser.Document Msg
@@ -369,7 +433,7 @@ view model =
                     case fetchedBooks of
                         [] ->
                             case model.newBookData of
-                                Just newBookData ->
+                                EditingNewData newBookData ->
                                     form
                                         [ onSubmit (GotNewBookMsg CreateNewBook)
                                         , TW.apply
@@ -686,7 +750,7 @@ view model =
                                             )
                                         ]
 
-                                Nothing ->
+                                NotCreating ->
                                     simpleEmptyState
                                         { mainIcon = bookOpenOutline
                                         , title = "No books"
@@ -695,6 +759,9 @@ view model =
                                         , buttonIcon = Just plusOutline
                                         , buttonMsg = AddNewBook
                                         }
+
+                                Creating _ ->
+                                    p [ TW.apply [ block, m_auto, text_2xl ] ] [ text "Creating book..." ]
 
                         first :: rest ->
                             text ""

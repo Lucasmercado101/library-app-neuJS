@@ -26,6 +26,10 @@ port sendCreateNewBook : Book -> Cmd msg
 port base64ImageConfirmationReceiver : (JE.Value -> msg) -> Sub msg
 
 
+
+-- TODO book tags
+
+
 type alias Book =
     { title : String
     , authors : List String

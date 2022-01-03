@@ -540,8 +540,12 @@ view model =
                                                                             ]
                                                                             []
                                                                         , column [ TW.apply [ mt_auto, gap_y_2 ] ]
-                                                                            [ blueButton [] [ text "Change Cover" ]
-                                                                            , blueButton [] [ text "Remove Cover" ]
+                                                                            [ blueButton
+                                                                                [ type_ "button"
+                                                                                , onClick (GotNewBookMsg RequestCover)
+                                                                                ]
+                                                                                [ text "Change Cover" ]
+                                                                            , blueButton [ type_ "button" ] [ text "Remove Cover" ]
                                                                             ]
                                                                         ]
 

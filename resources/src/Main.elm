@@ -733,30 +733,55 @@ view model =
                                     p [ TW.apply [ block, m_auto, text_2xl ] ] [ text "Creating book..." ]
 
                         first :: rest ->
-                            div
-                                [ TW.apply
-                                    [ overflow_auto
-                                    , w_2_slash_3
-                                    , grid
-                                    , gap_x_3
-                                    , sm [ grid_cols_2 ]
-                                    , md [ grid_cols_3 ]
-                                    , lg [ grid_cols_4 ]
-                                    , xl [ grid_cols_5 ]
-                                    , s2xl [ grid_cols_6 ]
-
-                                    -- , md [ flex, flex_col ]
+                            column []
+                                [ row
+                                    [ TW.apply
+                                        [ h_16
+                                        , bg_white
+                                        , shadow_sm
+                                        , items_center
+                                        , px_4
+                                        ]
                                     ]
+                                    [ blueButton
+                                        [ onClick AddNewBook
+                                        , TW.apply [ mr_auto ]
+                                        ]
+                                        [ row [ TW.apply [ gap_x_3, items_center ] ]
+                                            [ solidPlus [ TW.applyIcon [ h_5, w_5 ] ]
+                                            , text "New Book"
+                                            ]
+                                        ]
+                                    ]
+                                , div
+                                    [ TW.apply
+                                        [ overflow_auto
+                                        , w_2_slash_3
+                                        , grid
+                                        , gap_x_3
+                                        , sm [ grid_cols_2 ]
+                                        , md [ grid_cols_3 ]
+                                        , lg [ grid_cols_4 ]
+                                        , xl [ grid_cols_5 ]
+                                        , s2xl [ grid_cols_6 ]
+
+                                        -- , md [ flex, flex_col ]
+                                        ]
+                                    ]
+                                    (List.map
+                                        (\l -> book l)
+                                        fetchedBooks
+                                    )
                                 ]
-                                (List.map
-                                    (\l -> book l)
-                                    fetchedBooks
-                                )
 
             -- , bookDetails
             ]
         ]
     }
+
+
+
+-- TODO
 
 
 bookDetails =

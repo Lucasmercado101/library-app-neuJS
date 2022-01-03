@@ -51,6 +51,7 @@ type alias NewBookData =
     , dateFinishedReading : String
     , cover : Maybe File
     , coverUrl : Maybe String
+    , isbn : String
     }
 
 
@@ -99,6 +100,7 @@ type NewBookMsg
     | ChangePublishedDate String
     | ChangePages String
     | ChangeReadDate String
+    | ChangeISBN String
     | CoverLoaded File
     | RequestCover
     | GotCoverUrl String
@@ -133,6 +135,7 @@ update msg model =
                         , dateFinishedReading = ""
                         , cover = Nothing
                         , coverUrl = Nothing
+                        , isbn = ""
                         }
               }
             , Cmd.none
@@ -282,6 +285,17 @@ update msg model =
                             , Cmd.none
                             )
 
+                        ChangeISBN newIsbn ->
+                            ( { model
+                                | newBookData =
+                                    Just
+                                        { newBookData
+                                            | isbn = newIsbn
+                                        }
+                              }
+                            , Cmd.none
+                            )
+
                         CreateNewBook ->
                             ( { model | newBookData = Nothing }
                             , Ports.sendCreateNewBook
@@ -296,6 +310,7 @@ update msg model =
 
                                     else
                                         Just newBookData.dateFinishedReading
+                                , isbn = newBookData.isbn
                                 }
                             )
 
@@ -526,6 +541,25 @@ view model =
                                                                     , value newBookData.dateFinishedReading
                                                                     , required False
                                                                     , onInput (\l -> ChangeReadDate l |> GotNewBookMsg)
+                                                                    , TW.apply
+                                                                        [ border
+                                                                        , border_gray_300
+                                                                        , p_2
+                                                                        , pl_3
+                                                                        , w_full
+                                                                        , rounded_md
+                                                                        ]
+                                                                    ]
+                                                                    []
+                                                                ]
+                                                           , column []
+                                                                [ label [ for "book-isbn" ] [ p [] [ text "ISBN (International Standard Book Number)" ] ]
+                                                                , input
+                                                                    [ id "book-isbn"
+                                                                    , type_ "number"
+                                                                    , value newBookData.isbn
+                                                                    , required True
+                                                                    , onInput (\l -> ChangeISBN l |> GotNewBookMsg)
                                                                     , TW.apply
                                                                         [ border
                                                                         , border_gray_300

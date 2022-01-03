@@ -21,7 +21,14 @@ const app = Elm.Main.init({
 app.ports.sendRequestBooks.subscribe(async function () {
   try {
     const books = await Neutralino.storage.getData("books");
-    return app.ports.booksReceiver.send(JSON.parse(books));
+    const parsedBooks = JSON.parse(books);
+    let finalData = [];
+    for (const el of parsedBooks) {
+      const base64Data = await Neutralino.storage.getData(el.bookCoverPath);
+      el.bookCoverPath = base64Data;
+      finalData.push(el);
+    }
+    Promise.all(finalData).then(app.ports.booksReceiver.send);
   } catch (e) {
     return app.ports.booksReceiver.send([]);
     // TODO: handle error

@@ -394,38 +394,7 @@ view model =
     { title = "Title"
     , body =
         [ row [ TW.apply [ bg_gray_100, h_screen, w_screen, overflow_auto ] ]
-            [ --     div
-              --     [ TW.apply
-              --         [ overflow_auto
-              --         , w_2_slash_3
-              --         , grid
-              --         , gap_x_3
-              --         , sm [ grid_cols_2 ]
-              --         , md [ grid_cols_3 ]
-              --         , lg [ grid_cols_4 ]
-              --         , xl [ grid_cols_5 ]
-              --         , s2xl [ grid_cols_6 ]
-              --         -- , md [ flex, flex_col ]
-              --         ]
-              --     ]
-              --     [ book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     , book
-              --     ]
-              -- , bookDetails
-              case model.state of
+            [ case model.state of
                 FetchingBooks ->
                     p [ TW.apply [ block, m_auto, text_2xl ] ] [ text "Loading..." ]
 
@@ -764,7 +733,27 @@ view model =
                                     p [ TW.apply [ block, m_auto, text_2xl ] ] [ text "Creating book..." ]
 
                         first :: rest ->
-                            text ""
+                            div
+                                [ TW.apply
+                                    [ overflow_auto
+                                    , w_2_slash_3
+                                    , grid
+                                    , gap_x_3
+                                    , sm [ grid_cols_2 ]
+                                    , md [ grid_cols_3 ]
+                                    , lg [ grid_cols_4 ]
+                                    , xl [ grid_cols_5 ]
+                                    , s2xl [ grid_cols_6 ]
+
+                                    -- , md [ flex, flex_col ]
+                                    ]
+                                ]
+                                (List.map
+                                    (\l -> book l)
+                                    fetchedBooks
+                                )
+
+            -- , bookDetails
             ]
         ]
     }
@@ -836,7 +825,8 @@ bookDetails =
         ]
 
 
-book =
+book : Ports.Book -> Html msg
+book { authors, bookCoverPath, title } =
     column
         [ TW.apply
             [ hover [ bg_blue_500, text_white ]
@@ -846,7 +836,14 @@ book =
             ]
         ]
         [ img
-            [ src "https://ia800604.us.archive.org/view_archive.php?archive=/7/items/olcovers68/olcovers68-L.zip&file=680401-L.jpg"
+            [ src
+                (case bookCoverPath of
+                    Just val ->
+                        val
+
+                    Nothing ->
+                        ""
+                )
             , TW.apply
                 [ object_center
                 , object_cover
@@ -862,8 +859,8 @@ book =
                 , text_lg
                 ]
             ]
-            [ text "Klan-destine Relationships: A Black Man's Odyssey in the Ku Klux Klan" ]
-        , p [ TW.apply [ font_semibold, mt_1, text_gray_400 ] ] [ text "Daryl Davis" ]
+            [ text title ]
+        , p [ TW.apply [ font_semibold, mt_1, text_gray_400 ] ] [ text (List.foldl (++) ", " authors |> String.dropRight 2) ]
         ]
 
 
